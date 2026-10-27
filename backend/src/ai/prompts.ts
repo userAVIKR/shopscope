@@ -1,4 +1,4 @@
-import type { ChatMessage } from "./ollama.provider.js";
+import type { ChatMessage } from "./types.js";
 
 // Instructions for turning a question into SQL. `context` comes from buildModelContext().
 function systemPrompt(context: string): string {

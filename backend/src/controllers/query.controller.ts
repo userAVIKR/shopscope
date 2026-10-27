@@ -10,7 +10,7 @@ const askSchema = z.object({
 });
 
 // Always 200 for a handled outcome (succeeded, unanswerable, rejected, failed): the `status` field says which.
-// Model and infrastructure failures (e.g. Ollama down) are HTTP errors from the error handler.
+// Model and infrastructure failures (e.g. the model is down) are HTTP errors from the error handler.
 export const ask: RequestHandler = async (req, res) => {
   const input = askSchema.parse(req.body);
   getDataset(input.datasetId); // 404 for an unknown dataset

@@ -23,7 +23,8 @@
     "tests",
     "vitest.config.ts",
     "prisma.config.ts",
-    "vitest.ai.config.ts"
+    "vitest.ai.config.ts",
+    "scripts"
   ],
   "exclude": [
     "node_modules",

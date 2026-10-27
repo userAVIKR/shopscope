@@ -29,7 +29,7 @@ function Thinking() {
     <div className={styles.thinking} role="status">
       <LoaderCircle size={16} className={styles.spin} />
       <span>
-        {seconds < 4 ? "Writing SQL with the local AI model…" : "Checking and running the query…"}{" "}
+        {seconds < 4 ? "Writing SQL with the AI model…" : "Checking and running the query…"}{" "}
         <span className={styles.muted}>{seconds}s</span>
       </span>
     </div>

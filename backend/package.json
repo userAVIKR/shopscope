@@ -17,7 +17,9 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "test:ai": "vitest run --config vitest.ai.config.ts"
+    "test:ai": "vitest run --config vitest.ai.config.ts",
+    "ai:models": "tsx --env-file=.env scripts/list-gemini-models.ts",
+    "db:deploy": "prisma migrate deploy"
   },
   "engines": {
     "node": ">=24"

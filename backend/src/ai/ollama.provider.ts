@@ -2,14 +2,7 @@
 
 import { ollamaConfig } from "../config/ollama.js";
 import { HttpError } from "../utils/http-error.js";
-
-export type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
-
-export type ChatResult = {
-  content: string;
-  model: string;
-  durationMs: number;
-};
+import type { ChatMessage, ChatResult, ModelStatus } from "./types.js";
 
 type OllamaChatResponse = {
   model: string;
@@ -64,10 +57,8 @@ export async function chatJson(messages: ChatMessage[], format: object): Promise
   return { content, model: data.model, durationMs: Date.now() - started };
 }
 
-export type OllamaStatus = "up" | "down" | "model_missing";
-
 // For the health check: is Ollama running, and is the configured model installed?
-export async function checkOllama(): Promise<OllamaStatus> {
+export async function checkOllama(): Promise<ModelStatus> {
   try {
     const response = await fetch(`${ollamaConfig.baseUrl}/api/tags`, { signal: AbortSignal.timeout(2_000) });
     if (!response.ok) return "down";

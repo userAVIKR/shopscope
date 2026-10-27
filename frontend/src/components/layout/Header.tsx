@@ -9,12 +9,14 @@ import styles from "./AppShell.module.css";
 type Connection = { label: string; tone: "good" | "warning" | "critical" | "muted" };
 
 // Status comes from /health, never assumed.
+const aiName = (health: Health) => (health.ai.provider === "gemini" ? "Gemini" : "Local AI");
+
 function describe(health: Health | null | undefined): Connection {
   if (health === undefined) return { label: "Checking connection…", tone: "muted" };
   if (health === null) return { label: "Backend unreachable", tone: "critical" };
   if (health.checks.analyticsDatabase !== "up") return { label: "Database offline", tone: "critical" };
-  if (health.checks.ollama !== "up") return { label: "Connected · AI model offline", tone: "warning" };
-  return { label: "Connected", tone: "good" };
+  if (health.checks.aiModel !== "up") return { label: `Connected · ${aiName(health)} offline`, tone: "warning" };
+  return { label: `Connected · ${aiName(health)}`, tone: "good" };
 }
 
 export function Header({ title, subtitle }: { title: string; subtitle?: string }) {

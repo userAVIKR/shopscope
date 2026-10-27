@@ -96,7 +96,8 @@ export const healthSchema = z.object({
   checks: z.object({
     appDatabase: z.string(),
     analyticsDatabase: z.string(),
-    ollama: z.string(),
+    aiModel: z.string(),
   }),
+  ai: z.object({ provider: z.string(), model: z.string() }),
 });
 export type Health = z.infer<typeof healthSchema>;

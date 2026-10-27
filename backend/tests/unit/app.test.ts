@@ -1,12 +1,12 @@
-// App behaviour with the databases and Ollama replaced by mocks, so these tests run without Docker or a model.
+// App behaviour with the databases and AI model replaced by mocks, so these tests run without Docker or a model.
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const pingAnalyticsDatabase = vi.fn<() => Promise<boolean>>();
 const pingAppDatabase = vi.fn<() => Promise<boolean>>();
 vi.mock("../../src/config/database.js", () => ({ pingAnalyticsDatabase, pingAppDatabase }));
-const checkOllama = vi.fn<() => Promise<"up" | "down" | "model_missing">>();
-vi.mock("../../src/ai/ollama.provider.js", () => ({ checkOllama }));
+const checkModel = vi.fn<() => Promise<"up" | "down" | "model_missing" | "invalid_key">>();
+vi.mock("../../src/ai/model.js", () => ({ checkModel, modelInfo: { provider: "ollama", model: "test-model" } }));
 
 const { createApp } = await import("../../src/app.js");
 const app = createApp();
@@ -15,13 +15,14 @@ describe("GET /api/v1/health", () => {
   beforeEach(() => {
     pingAnalyticsDatabase.mockResolvedValue(true);
     pingAppDatabase.mockResolvedValue(true);
-    checkOllama.mockResolvedValue("up");
+    checkModel.mockResolvedValue("up");
   });
 
-  it("returns 200 when both databases and Ollama are ready", async () => {
+  it("returns 200 when both databases and the AI model are ready", async () => {
     const res = await request(app).get("/api/v1/health");
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ status: "ok", checks: { appDatabase: "up", analyticsDatabase: "up", ollama: "up" } });
+    expect(res.body).toMatchObject({ status: "ok", checks: { appDatabase: "up", analyticsDatabase: "up", aiModel: "up" } });
+    expect(res.body.ai).toEqual({ provider: "ollama", model: "test-model" });
   });
 
   it.each([
@@ -34,11 +35,11 @@ describe("GET /api/v1/health", () => {
     expect(res.body).toMatchObject({ status: "degraded", checks });
   });
 
-  it.each(["down", "model_missing"] as const)("returns 503 when Ollama is %s", async (status) => {
-    checkOllama.mockResolvedValue(status);
+  it.each(["down", "model_missing", "invalid_key"] as const)("returns 503 when the AI model is %s", async (status) => {
+    checkModel.mockResolvedValue(status);
     const res = await request(app).get("/api/v1/health");
     expect(res.status).toBe(503);
-    expect(res.body.checks.ollama).toBe(status);
+    expect(res.body.checks.aiModel).toBe(status);
   });
 });
 

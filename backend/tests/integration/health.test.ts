@@ -7,9 +7,9 @@ import { closeDatabases } from "../../src/config/database.js";
 afterAll(() => closeDatabases());
 
 describe("GET /api/v1/health (real database)", () => {
-  it("reports both databases and Ollama as up", async () => {
+  it("reports both databases and the AI model as up", async () => {
     const res = await request(createApp()).get("/api/v1/health");
     expect(res.status).toBe(200);
-    expect(res.body.checks).toEqual({ appDatabase: "up", analyticsDatabase: "up", ollama: "up" });
+    expect(res.body.checks).toEqual({ appDatabase: "up", analyticsDatabase: "up", aiModel: "up" });
   });
 });

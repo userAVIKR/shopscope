@@ -50,7 +50,7 @@ const COPY = {
 const FEATURES = [
   { icon: MessageSquareText, title: "Ask in plain English", text: "Questions become charts in seconds" },
   { icon: Code2, title: "See the SQL", text: "Every answer shows its query" },
-  { icon: ShieldCheck, title: "Read-only by design", text: "Validated, and runs on your machine" },
+  { icon: ShieldCheck, title: "Read-only by design", text: "Every query is checked before it runs" },
 ];
 
 const STATUS_LABEL: Record<ServerStatus, string> = {
@@ -95,7 +95,7 @@ export default function LoginPage() {
     void getHealth().then((health) => {
       if (!health) setServer("offline");
       else if (health.checks.appDatabase !== "up") setServer("offline");
-      else setServer(health.checks.ollama === "up" ? "ready" : "ai-offline");
+      else setServer(health.checks.aiModel === "up" ? "ready" : "ai-offline");
     });
   }, []);
 

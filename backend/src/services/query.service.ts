@@ -82,7 +82,7 @@ export async function askQuestion(userId: string, input: Omit<GenerateSqlInput, 
 
     return await saveOutcome(userId, input, attempt, proposal, repaired, Date.now() - started);
   } catch (error) {
-    // Model or infrastructure failure (Ollama down, timeout...). Record it, then let the error handler respond.
+    // Model or infrastructure failure (model down, timeout, rate limit...). Record it, then let the error handler respond.
     if (error instanceof HttpError) {
       await prisma.queryHistory.create({
         data: {

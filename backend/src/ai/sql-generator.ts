@@ -4,7 +4,7 @@ import { z } from "zod";
 import { buildModelContext, getDataCoverage } from "../analytics/schema.service.js";
 import { analyticsPool } from "../config/database.js";
 import { HttpError } from "../utils/http-error.js";
-import { type ChatMessage, chatJson } from "./ollama.provider.js";
+import { type ChatMessage, chatJson } from "./model.js";
 import { buildRepairMessages, buildSqlMessages } from "./prompts.js";
 
 const MAX_SQL_LENGTH = 5_000;
@@ -15,7 +15,7 @@ const modelReplySchema = z.object({
   explanation: z.string(),
 });
 
-// Ollama constrains its output to this JSON Schema, generated from the same Zod schema used to check it.
+// The model provider constrains its output to this JSON Schema, generated from the same Zod schema used to check it.
 const MODEL_REPLY_FORMAT = z.toJSONSchema(modelReplySchema);
 
 export type SqlProposal =
