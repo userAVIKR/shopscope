@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Environment files (keep the .example ones)
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Prisma
+backend/src/generated/
+
+# Tests
+coverage/
+playwright-report/
+test-results/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
