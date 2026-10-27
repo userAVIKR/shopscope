@@ -25,3 +25,16 @@ export const createRegisterRateLimiter = () =>
     legacyHeaders: false,
     handler: (_req, _res, next) => next(tooManyAttempts()),
   });
+
+// Each question runs the local model, so limit how fast one user can ask: 20 per minute.
+// Must come after requireAuth: the limit is per user, not per IP.
+export const createQueryRateLimiter = () =>
+  rateLimit({
+    windowMs: 60 * 1000,
+    limit: 20,
+    keyGenerator: (req) => req.user?.id ?? "anonymous",
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    handler: (_req, _res, next) =>
+      next(new HttpError(429, "TOO_MANY_REQUESTS", "You are asking questions too quickly. Please wait a moment.")),
+  });

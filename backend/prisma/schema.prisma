@@ -55,10 +55,14 @@ enum QueryStatus {
 model QueryHistory {
   id           String      @id @default(uuid()) @db.Uuid
   userId       String      @map("user_id") @db.Uuid
+  datasetId    String      @default("sales") @map("dataset_id")
   question     String
   generatedSql String?     @map("generated_sql")
+  explanation  String?
   status       QueryStatus
+  repaired     Boolean     @default(false) // true when the one repair attempt was used
   errorCode    String?     @map("error_code")
+  errorMessage String?     @map("error_message")
   rowCount     Int?        @map("row_count")
   durationMs   Int?        @map("duration_ms")
   model        String?
@@ -75,6 +79,7 @@ model SavedReport {
   id          String   @id @default(uuid()) @db.Uuid
   userId      String   @map("user_id") @db.Uuid
   queryId     String?  @map("query_id") @db.Uuid
+  datasetId   String   @default("sales") @map("dataset_id")
   name        String
   question    String
   sql         String

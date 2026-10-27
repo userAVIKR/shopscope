@@ -5,7 +5,8 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { createApp } from "../../src/app.js";
 import { closeDatabases, prisma } from "../../src/config/database.js";
 
-const TEST_DOMAIN = "@shopscope.test";
+// Unique to this file: other test files run in parallel and must not lose their users.
+const TEST_DOMAIN = "@auth.shopscope.test";
 const PASSWORD = "correct horse battery";
 
 const uniqueEmail = () => `user-${randomUUID()}${TEST_DOMAIN}`;
