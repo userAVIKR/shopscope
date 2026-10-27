@@ -1,8 +1,15 @@
+import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
+import { PrismaClient } from "../generated/prisma/client.js";
 import { env } from "./env.js";
 
+// Application database (users, sessions, history, reports) through Prisma.
+export const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: env.APP_DATABASE_URL, application_name: "shopscope-api" }),
+});
+
 // Connection pool for the analytics database, using the SELECT-only reader role.
-// This is the only path generated SQL may take. The app database uses Prisma (Phase 3).
+// This is the only path generated SQL may take.
 export const analyticsPool = new pg.Pool({
   connectionString: env.ANALYTICS_DATABASE_URL,
   application_name: "shopscope-api",
@@ -25,6 +32,15 @@ export async function pingAnalyticsDatabase(): Promise<boolean> {
   }
 }
 
+export async function pingAppDatabase(): Promise<boolean> {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function closeDatabases(): Promise<void> {
-  await analyticsPool.end();
+  await Promise.all([analyticsPool.end(), prisma.$disconnect()]);
 }

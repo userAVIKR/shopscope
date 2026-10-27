@@ -1,6 +1,13 @@
 import { Router } from "express";
+import { createAuthRouter } from "./auth.routes.js";
 import { healthRouter } from "./health.routes.js";
 
-export const apiRouter = Router();
+// Every route except /health and /auth must use requireAuth.
+export function createApiRouter() {
+  const router = Router();
 
-apiRouter.use("/health", healthRouter);
+  router.use("/health", healthRouter);
+  router.use("/auth", createAuthRouter());
+
+  return router;
+}

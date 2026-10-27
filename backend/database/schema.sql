@@ -68,4 +68,9 @@ COMMENT ON COLUMN order_items.unit_price IS 'Price in INR per unit at the time o
 
 -- Default privileges already cover these, but grant explicitly so the reader works
 -- even if the tables were created by a different role.
-GRANT SELECT ON customers, categories, products, orders, order_items TO shopscope_reader;
+GRANT SELECT ON categories, products, orders, order_items TO shopscope_reader;
+
+-- Personal data stays unreadable at the database level, not just hidden by the app.
+-- Keep in sync with the `sensitive` columns in src/analytics/schema.service.ts.
+REVOKE SELECT ON customers FROM shopscope_reader;
+GRANT SELECT (id, city, created_at) ON customers TO shopscope_reader;

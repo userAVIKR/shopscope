@@ -1,0 +1,106 @@
+// Application database (shopscope_app): who uses ShopScope and what they did.
+// The e-commerce data lives in shopscope_analytics and is NOT managed by Prisma.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique // stored lower-cased
+  name         String
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  sessions     Session[]
+  queries      QueryHistory[]
+  reports      SavedReport[]
+  auditEvents  AuditEvent[]
+
+  @@map("users")
+}
+
+// The cookie holds a random token; only its HMAC is stored, so a database leak cannot log anyone in.
+model Session {
+  id        String   @id // HMAC-SHA256 of the session token
+  userId    String   @map("user_id") @db.Uuid
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  userAgent String?  @map("user_agent")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+enum QueryStatus {
+  SUCCEEDED    // SQL validated and executed
+  REJECTED     // generated SQL failed the safety checks
+  UNANSWERABLE // the model said the data cannot answer the question
+  FAILED       // model, timeout or database error
+
+  @@map("query_status")
+}
+
+model QueryHistory {
+  id           String      @id @default(uuid()) @db.Uuid
+  userId       String      @map("user_id") @db.Uuid
+  question     String
+  generatedSql String?     @map("generated_sql")
+  status       QueryStatus
+  errorCode    String?     @map("error_code")
+  rowCount     Int?        @map("row_count")
+  durationMs   Int?        @map("duration_ms")
+  model        String?
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reports SavedReport[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("query_history")
+}
+
+model SavedReport {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  queryId     String?  @map("query_id") @db.Uuid
+  name        String
+  question    String
+  sql         String
+  chartConfig Json?    @map("chart_config")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  query QueryHistory? @relation(fields: [queryId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("saved_reports")
+}
+
+// Security-relevant events. userId is kept nullable so failed logins for unknown emails are recorded too.
+model AuditEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
+  type      String   // e.g. auth.register, auth.login.succeeded, auth.login.failed, auth.logout
+  ip        String?
+  metadata  Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([type, createdAt(sort: Desc)])
+  @@map("audit_events")
+}
