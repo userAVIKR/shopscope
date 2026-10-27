@@ -1,0 +1,32 @@
+# Local PostgreSQL for ShopScope.
+# Start:  docker compose up -d --wait
+# Passwords come from the root .env file (copy .env.example to .env).
+name: shopscope
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: shopscope-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?Set APP_DB_PASSWORD in .env}
+      ANALYTICS_OWNER_PASSWORD: ${ANALYTICS_OWNER_PASSWORD:?Set ANALYTICS_OWNER_PASSWORD in .env}
+      ANALYTICS_READER_PASSWORD: ${ANALYTICS_READER_PASSWORD:?Set ANALYTICS_READER_PASSWORD in .env}
+    ports:
+      # Bound to 127.0.0.1 so the database is not reachable from other machines.
+      # Host port 5433 avoids clashing with a natively installed PostgreSQL on 5432.
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Runs once, on the first start with an empty volume.
+      - ./backend/database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  postgres-data:
