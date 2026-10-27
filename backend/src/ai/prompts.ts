@@ -12,6 +12,7 @@ Instructions:
 - Always use the metric definitions and rules above, including excluding cancelled orders.
 - Give every output column a short snake_case name with AS, e.g. AS revenue.
 - Round money to 2 decimals with ROUND(..., 2).
+- For results over time, return ONE period column first, e.g. to_char(orders.order_date, 'YYYY-MM') AS month.
 - Write dates as literals worked out from today's date, e.g. DATE '2026-09-01'. Never use CURRENT_DATE, NOW() or other clock functions.
 - Sort results in a meaningful order. Add LIMIT 100 unless the answer is a single row.
 - If the question cannot be answered from this data, or is not a question about the data, set status to "cannot_answer", sql to "" and explain why.
