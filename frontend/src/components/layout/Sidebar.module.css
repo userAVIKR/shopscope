@@ -1,0 +1,166 @@
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  height: 100vh;
+  padding: 24px 16px;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  text-decoration: none;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--button);
+  color: var(--button-text);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.brandName {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  letter-spacing: -0.01em;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.link:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+.link[aria-current="page"] {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+  font-weight: 500;
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 12px 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name,
+.email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.email {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.logout {
+  margin-left: auto;
+  padding: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-muted);
+}
+
+.logout:hover {
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+}
+
+/* Small screens: the sidebar becomes a top bar. */
+@media (max-width: 860px) {
+  .sidebar {
+    z-index: 10;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    height: auto;
+    padding: 10px 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brandName,
+  .who {
+    display: none;
+  }
+
+  .brand {
+    padding: 0;
+  }
+
+  .nav {
+    flex-direction: row;
+  }
+
+  .link span {
+    display: none;
+  }
+
+  .account {
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+  }
+}

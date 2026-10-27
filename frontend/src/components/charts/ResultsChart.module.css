@@ -1,0 +1,69 @@
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.figure {
+  margin: 0;
+}
+
+.caption {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 4px;
+}
+
+.metricLabel {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.metricValue {
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.empty {
+  margin: 0;
+  padding: 24px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.tooltip {
+  min-width: 160px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 12px;
+}
+
+.tooltipLabel {
+  margin-bottom: 4px;
+  color: var(--text-muted);
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--text-secondary);
+}
+
+.tooltipRow strong {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}

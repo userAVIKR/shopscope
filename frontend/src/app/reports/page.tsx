@@ -1,7 +1,12 @@
+"use client";
+
+import { AppShell } from "@/components/layout/AppShell";
+import { SavedReports } from "@/features/reports/SavedReports";
+
 export default function ReportsPage() {
   return (
-    <main>
-      <h1>Reports</h1>
-    </main>
+    <AppShell title="Saved reports">
+      <SavedReports />
+    </AppShell>
   );
 }
